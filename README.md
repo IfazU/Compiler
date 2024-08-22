@@ -8,6 +8,7 @@ The compiler is built using Scala and features several stages, including lexical
 
 
 Features
+
 Lexical Analysis: Converts the raw source code into tokens for further processing.
 
 
