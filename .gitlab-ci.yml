@@ -1,0 +1,35 @@
+image: gumjoe/wacc-ci-scala:x86
+
+stages:         
+  - build
+  - test
+
+build-job:       
+  stage: build
+  script:
+    - echo "Building..."
+    - scala-cli clean . && rm -f wacc-compiler # i.e make clean
+    - scala-cli --power package . -o wacc-compiler --server=false --jvm system --force # i.e make
+    - echo "Build complete."
+
+unit-test-job:  
+  stage: test   
+  script:
+    - echo "Running unit tests..."
+    - scala-cli test . --test-only 'wacc.unit*'
+    - echo "Unit tests complete."
+
+integration-test-job:  
+  stage: test   
+  script:
+    - echo "Running integration tests..."
+    - scala-cli test . --test-only 'wacc.integration*'
+    - echo "Integation tests complete."
+
+style-test-job:
+  stage: test
+  script: 
+    - echo "Performing style check..."
+    - scala-cli compile . --test --server=false
+    - scalafix --check src --scalac-options "-Xlint:unused" --auto-classpath --stdout || true
+    - echo "Style check complete."
